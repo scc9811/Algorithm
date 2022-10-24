@@ -7,11 +7,11 @@ public class Main {
     public static void main(String[] args)throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int cities = Integer.parseInt(br.readLine());
-        long sum =0;
+        int sum =0;
         StringTokenizer road = new StringTokenizer(br.readLine());
         StringTokenizer price = new StringTokenizer(br.readLine());
 
-        long min = Integer.parseInt(price.nextToken());
+        int min = Integer.parseInt(price.nextToken());
         sum += min*Integer.parseInt(road.nextToken());
         cities--;
         while (--cities >0){
