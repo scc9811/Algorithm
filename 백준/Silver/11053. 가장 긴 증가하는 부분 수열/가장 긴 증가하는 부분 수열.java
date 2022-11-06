@@ -1,43 +1,38 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class Main {
-    static int[] dp;
+public class Main{
     public static void main(String[] args)throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine());
-        dp = new int[N+1];
-        int[] array = new int[N];
+        int n = Integer.parseInt(br.readLine());
+        int[] arr = new int[n];
         StringTokenizer st = new StringTokenizer(br.readLine());
-        for (int i=0; i<N; i++){
-            array[i] = Integer.parseInt(st.nextToken());
-        }
-
-        dp[1] = array[0];
-        int count =1;
-        for (int i=1; i<N; i++) {
-            // 다음으로 오는 수가  최대값보다 큰 경우
-            if (dp[count] < array[i]){
-                dp[++count] = array[i];
+        int index = 1;
+        arr[0] = Integer.parseInt(st.nextToken());
+        for(int i=1; i<n; i++){
+            int key = Integer.parseInt(st.nextToken());
+            if(key > arr[index-1]) {
+                arr[index++] = key;
             }
-            // 최댓값보다 작은 경우 >> 배열이 정렬되어있으므로 맞는위치에 삽입.
-            else if (dp[count] > array[i]){
-                for (int j=1; j<=count; j++){
-                    if(dp[j] >= array[i]){
-                        dp[j] = array[i];
+            else if(key < arr[index-1]){
+                for(int j=0; j<index; j++){
+                    if(key <= arr[j]) {
+                        arr[j] = key;
                         break;
                     }
                 }
             }
-//            System.out.println(Arrays.toString(dp));
+//            System.out.println(Arrays.toString(arr));
         }
+//        System.out.println(Arrays.toString(arr));
 
-        System.out.println(count);
+        System.out.println(index);
+
+
 
 
 
     }
 }
+
