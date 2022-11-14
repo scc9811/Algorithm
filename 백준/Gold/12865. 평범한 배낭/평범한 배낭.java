@@ -1,28 +1,37 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
 
-public class Main {
+public class Main{
     public static void main(String[] args)throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int objectCount = Integer.parseInt(st.nextToken());
-        int fullWeight = Integer.parseInt(st.nextToken());
-        // index 0은 쓰지 않음.
-        int[] dp = new int[fullWeight+1];
-        for (int i=0; i<objectCount; i++){
-            StringTokenizer st2 = new StringTokenizer(br.readLine());
-            int weight = Integer.parseInt(st2.nextToken());
-            int value = Integer.parseInt(st2.nextToken());
-            if (weight <=fullWeight){
-                for (int j=fullWeight; j>=weight; j--){
-                    dp[j] = Math.max(dp[j],dp[j-weight]+value);
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        int[] dp = new int[m+1];
+//        Arrays.fill(dp, -1);
+//        dp[0] = 0;
+        for(int i=0; i<n; i++){
+            st = new StringTokenizer(br.readLine());
+            int w = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            if(w <= m) {
+                for (int j = m; j >= w; j--) {
+                    dp[j] = Math.max(dp[j], dp[j - w] + v);
                 }
             }
+//            System.out.println(Arrays.toString(dp));
         }
-        System.out.println(dp[fullWeight]);
+
+        System.out.println(dp[m]);
+//        int result = 0;
+//        for(int i=0; i<=m; i++){
+//            result = Math.max(result, dp[i]);
+//        }
+//        System.out.println(result);
+
+
 
     }
 }
