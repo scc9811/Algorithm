@@ -3,75 +3,69 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class Main {
-    public static void main(String[] args)throws IOException {
-        Queue<int[]> queue = new LinkedList<>();
+public class Main{
+    static int[] dx = {-1,1,0,0};
+    static int[] dy = {0,0,1,-1};
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        int[][] array = new int[N][M];
-
-        for (int i=0; i<N; i++){
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        int[][] arr = new int[n][m];
+        for(int i=0; i<n; i++){
             String s = br.readLine();
-            for (int j=0; j<M; j++){
-                array[i][j] = Integer.parseInt(s.substring(j,j+1));
+            for(int j=0; j<m; j++){
+                arr[i][j] = s.charAt(j)-'0';
             }
         }
+//        boolean[][] visited = new boolean[n][m];
 
-        int count =0;
+        Queue<Point> queue = new LinkedList<>();
+        queue.add(new Point(0,0));
+        arr[0][0] = 0;
+//        for(int i=0; i<n; i++){
+//            System.out.println(Arrays.toString(arr[i]));
+//        }
 
-        queue.add(new int[] {0,0});
-        array[0][0] = 0;
-        count++;
         int tmp = 1;
-        while(true){
-            int[] semiArray = queue.poll();
-            int i=semiArray[0];
-            int j=semiArray[1];
-            if (i==N-1 && j==M-1) break;
-
-            if (i+1<N && array[i+1][j]==1){
-                queue.add(new int[] {i+1,j});
-                array[i+1][j] = 0;
-            }
-            if (i>0 && array[i-1][j]==1){
-                queue.add(new int[] {i-1,j});
-                array[i-1][j] = 0;
-            }
-            if (j+1<M && array[i][j+1]==1){
-                queue.add(new int[] {i,j+1});
-                array[i][j+1] = 0;
-            }
-            if (j>0 && array[i][j-1]==1){
-                queue.add(new int[] {i,j-1});
-                array[i][j-1] = 0;
-            }
+        int count = 0;
+        while(!queue.isEmpty()){
             tmp--;
-            if (tmp==0){
-                tmp = queue.size();
+            if(tmp==0){
                 count++;
+                tmp = queue.size();
             }
-
-
-
-
-
-
+            Point p = queue.poll();
+            int startI = p.x;
+            int startJ = p.y;
+//            System.out.println("startI = "+startI);
+//            System.out.println("startJ = "+startJ);
+//            System.out.println();
+            for(int i=0; i<4; i++){
+                int newI = startI+dx[i];
+                int newJ = startJ+dy[i];
+                if(newI>=0 && newI<n && newJ>=0 && newJ<m && arr[newI][newJ]==1){
+                    if(newI==n-1 && newJ==m-1){
+                        queue = new LinkedList<>();
+                        break;
+                    }
+                    arr[newI][newJ]=0;
+                    queue.add(new Point(newI, newJ));
+                }
+            }
         }
-        System.out.println(count);
+        System.out.println(count+1);
 
 
 
 
 
-
-
-
-
-
-
-
-
+    }
+    static class Point{
+        int x, y;
+        Point(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
     }
 }
