@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class Main {
+public class Main{
     static int n, m;
     static Node[] arr;
     public static void main(String[] args) throws IOException {
@@ -19,10 +19,11 @@ public class Main {
             arr[end] = new Node(start, arr[end]);
         }
 
+        visited = new boolean[n];
         for(int i=0; i<n; i++){
-            visited = new boolean[n];
             visited[i] = true;
             back(0, i);
+            visited[i] = false;
         }
         System.out.println(0);
 
