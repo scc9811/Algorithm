@@ -1,22 +1,23 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
-
 public class Main {
-    public static void main(String[] args)throws IOException {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         int testCase = Integer.parseInt(br.readLine());
         StringBuilder sb = new StringBuilder();
-        while (testCase-->0){
+
+
+        while(testCase-->0){
             StringTokenizer st = new StringTokenizer(br.readLine());
             sb.append(Integer.parseInt(st.nextToken())+Integer.parseInt(st.nextToken())).append('\n');
         }
-        bw.write(sb.toString());
-        bw.close();
+        System.out.println(sb);
 
 
 
     }
-
 }
+
