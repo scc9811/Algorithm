@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class Main{
+public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -9,9 +9,7 @@ public class Main{
         int m = Integer.parseInt(st.nextToken());
         int[] inDegree = new int[n+1];
         Node[] graph = new Node[n+1];
-        boolean[] visited = new boolean[n+1];
-        ArrayList<Integer> res = new ArrayList<>();
-
+        StringBuilder sb = new StringBuilder();
 
         for(int i=0; i<m; i++){
             st = new StringTokenizer(br.readLine());
@@ -24,29 +22,22 @@ public class Main{
         Queue<Integer> queue = new LinkedList<>();
         for(int i=1; i<=n; i++){
             if(inDegree[i]==0){
-                visited[i] = true;
                 queue.add(i);
             }
         }
 
         while(!queue.isEmpty()){
             int k = queue.poll();
-            res.add(k);
+            sb.append(k).append(' ');
             for(Node node=graph[k]; node!=null; node=node.next){
                 inDegree[node.to]--;
-            }
-            for(int i=1; i<=n; i++){
-                if(!visited[i] && inDegree[i]==0){
-                    queue.add(i);
-                    visited[i] = true;
+                if(inDegree[node.to]==0){
+                    queue.add(node.to);
                 }
             }
         }
 
-        StringBuilder sb = new StringBuilder();
-        for(int i : res){
-            sb.append(i).append(' ');
-        }
+
         System.out.println(sb);
 
 
