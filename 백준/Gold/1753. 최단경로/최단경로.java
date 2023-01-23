@@ -22,28 +22,29 @@ public class Main {
         for(Node node=graph[startNode]; node!=null; node=node.next){
             weight[node.to] = Math.min(weight[node.to], node.weight);
         }
-        
+
         boolean[] visited = new boolean[v+1];
         visited[startNode] = true;
-        while(true){
-            int min = (int)1e9;
-            int minNode = -1;
-            for(int i=1; i<=v; i++){
-                if(!visited[i] && weight[i]<min){
-                    min = weight[i];
-                    minNode = i;
+        PriorityQueue<Compare> priorityQueue = new PriorityQueue<>();
+        for(int i=1; i<=v; i++){
+            if(weight[i]!=1e9) priorityQueue.add(new Compare(i, weight[i]));
+        }
+        while(!priorityQueue.isEmpty()){
+            Compare c = priorityQueue.poll();
+            if(visited[c.to]) continue;
+            int k = c.to;
+            visited[k] = true;
+            for(Node node=graph[k]; node!=null; node=node.next){
+                if(weight[node.to] > weight[k]+node.weight){
+                    weight[node.to] = weight[k]+node.weight;
+                    priorityQueue.add(new Compare(node.to, weight[node.to]));
                 }
-            }
-            if(minNode==-1) break;
-            visited[minNode] = true;
-            for(Node node=graph[minNode]; node!=null; node=node.next){
-                weight[node.to] = Math.min(weight[node.to], weight[minNode]+node.weight);
             }
         }
         weight[startNode] = 0;
         StringBuilder sb = new StringBuilder();
         for(int i=1; i<=v; i++){
-            if(weight[i]==(int)1e9) sb.append("INF");
+            if(weight[i]==1e9) sb.append("INF");
             else sb.append(weight[i]);
             sb.append('\n');
         }
@@ -54,10 +55,16 @@ public class Main {
 
 
 
-
-
-
-
+    }
+    public static class Compare implements Comparable<Compare>{
+        int to, weight;
+        Compare(int to, int weight){
+            this.to = to;
+            this.weight = weight;
+        }
+        public int compareTo(Compare compare){
+            return Integer.compare(this.weight, compare.weight);
+        }
 
     }
     public static class Node{
