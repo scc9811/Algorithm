@@ -3,13 +3,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class Main {
+public class Main{
     public static void main(String[] args)throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         int n = Integer.parseInt(st.nextToken());
         int m = Integer.parseInt(st.nextToken());
-//        Node[] graph = new Node[n+1];
         PriorityQueue<Edge> priorityQueue = new PriorityQueue<>(Collections.reverseOrder());
         int[] parent = new int[n+1];
         for(int i=1; i<=n; i++){
@@ -64,13 +63,4 @@ public class Main {
         if(parent[i]==i) return i;
         return find(parent, parent[i]);
     }
-//    public static class Node{
-//        int to, weight;
-//        Node next;
-//        Node(int to, int weight, Node next){
-//            this.to = to;
-//            this.weight = weight;
-//            this.next = next;
-//        }
-//    }
 }
