@@ -1,21 +1,20 @@
 import java.io.*;
 import java.util.*;
 public class Main{
+    static List<Integer> primeNumbers;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        List<Integer> primeNumbers = new ArrayList<>();
-        for(int i=2; i<=n; i++){
-            if(isPrime(i)) primeNumbers.add(i);
-        }
+        primeNumbers = new ArrayList<>();
+        getPrime(n);
 
-        
+
         int size = primeNumbers.size();
         int left = -1;
         int right = 0;
         int sum = 0;
         int res = 0;
-        
+
         while(true){
             if(sum==n){
                 res++;
@@ -44,10 +43,18 @@ public class Main{
 
 
     }
-    static boolean isPrime(int n){
-        for(int i=2; i*i<=n; i++){
-            if(n%i==0) return false;
+    static void getPrime(int n){
+        boolean[] isPrime = new boolean[n+1];
+        Arrays.fill(isPrime, true);
+        for(int i=2; i<=n; i++){
+            if(isPrime[i]){
+                primeNumbers.add(i);
+                int tmp = i;
+                while(tmp <= n){
+                    isPrime[tmp] = false;
+                    tmp += i;
+                }
+            }
         }
-        return true;
     }
 }
