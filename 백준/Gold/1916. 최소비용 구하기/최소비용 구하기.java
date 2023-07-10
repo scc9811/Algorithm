@@ -1,15 +1,17 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
+import java.io.*;
 
-public class Main{
+public class Main {
+    static final int INF = (int)1e9 + 2;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int v = Integer.parseInt(br.readLine());
-        int e = Integer.parseInt(br.readLine());
-        Node[] graph = new Node[v+1];
-        for(int i=0; i<e; i++){
+        int n = Integer.parseInt(br.readLine());
+        int m = Integer.parseInt(br.readLine());
+        int[] dis = new int[n+1];
+
+        Arrays.fill(dis, INF);
+        Node[] graph = new Node[n+1];
+        for(int i=0; i<m; i++){
             StringTokenizer st = new StringTokenizer(br.readLine());
             int from = Integer.parseInt(st.nextToken());
             int to = Integer.parseInt(st.nextToken());
@@ -19,57 +21,48 @@ public class Main{
         StringTokenizer st = new StringTokenizer(br.readLine());
         int start = Integer.parseInt(st.nextToken());
         int end = Integer.parseInt(st.nextToken());
-
-        int[] distance = new int[v+1];
-        Arrays.fill(distance, (int)1e9);
-        boolean[] visited = new boolean[v+1];
-        visited[start] = true;
-        PriorityQueue<Compare> priorityQueue = new PriorityQueue<>();
+        dis[start] = 0;
+        PriorityQueue<Edge> priorityQueue = new PriorityQueue<>();
         for(Node node=graph[start]; node!=null; node=node.next){
-            distance[node.to] = Math.min(distance[node.to], node.weight);
-            priorityQueue.add(new Compare(node.to, distance[node.to]));
-        }
-        while(!priorityQueue.isEmpty()){
-            Compare now = priorityQueue.poll();
-            if(visited[now.to]) continue;
-            visited[now.to] = true;
-            for(Node node=graph[now.to]; node!=null; node=node.next){
-                distance[node.to] = Math.min(distance[node.to], distance[now.to] + node.weight);
-                priorityQueue.add(new Compare(node.to, distance[node.to]));
+            if(dis[node.to] > node.weight){
+                dis[node.to] = node.weight;
+                priorityQueue.add(new Edge(node.to, dis[node.to]));
             }
         }
 
-        System.out.println(distance[end]);
-
-
-
-
-
-
-
+        while(!priorityQueue.isEmpty()){
+            Edge e = priorityQueue.poll();
+            if(e.weight > dis[e.to]) continue;
+            for(Node node=graph[e.to]; node!=null; node=node.next){
+                if(dis[node.to] > dis[e.to] + node.weight){
+                    dis[node.to] = dis[e.to] + node.weight;
+                    priorityQueue.add(new Edge(node.to, dis[node.to]));
+                }
+            }
+        }
+        System.out.println(dis[end]);
 
 
 
 
     }
-    public static class Compare implements Comparable<Compare>{
-        int to, weight;
-        Compare(int to, int weight){
-            this.to = to;
-            this.weight = weight;
-        }
-        public int compareTo(Compare compare){
-            return Integer.compare(this.weight, compare.weight);
-        }
-
-    }
-    public static class Node{
+    static class Node{
         int to, weight;
         Node next;
         Node(int to, int weight, Node next){
             this.to = to;
             this.weight = weight;
             this.next = next;
+        }
+    }
+    static class Edge implements Comparable<Edge>{
+        int to, weight;
+        Edge(int to, int weight){
+            this.to = to;
+            this.weight = weight;
+        }
+        public int compareTo(Edge e){
+            return Integer.compare(this.weight, e.weight);
         }
     }
 }
