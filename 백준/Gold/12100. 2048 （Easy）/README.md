@@ -4,11 +4,11 @@
 
 ### 성능 요약
 
-메모리: 48032 KB, 시간: 404 ms
+메모리: 36248 KB, 시간: 348 ms
 
 ### 분류
 
-백트래킹(backtracking), 브루트포스 알고리즘(bruteforcing), 구현(implementation), 시뮬레이션(simulation)
+백트래킹, 브루트포스 알고리즘, 구현, 시뮬레이션
 
 ### 문제 설명
 

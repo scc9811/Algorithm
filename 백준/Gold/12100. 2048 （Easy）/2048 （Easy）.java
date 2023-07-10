@@ -1,33 +1,21 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
+import java.io.*;
 
-public class Main{
-    static int n,  maxBlock;
-    public static void main(String[] args)throws IOException {
+public class Main {
+    static int n, res, arr[][];
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         n = Integer.parseInt(br.readLine());
-        int[][] arr = new int[n][n];
+        arr = new int[n][n];
         for(int i=0; i<n; i++){
             StringTokenizer st = new StringTokenizer(br.readLine());
             for(int j=0; j<n; j++){
                 arr[i][j] = Integer.parseInt(st.nextToken());
             }
         }
-
-        maxBlock = 0;
-        for(int i=0; i<4; i++){
-            int[][] tmp = new int[n][n];
-            for(int j=0; j<n; j++){
-                tmp[j] = Arrays.copyOf(arr[j], n);
-            }
-            back(0,i, tmp);
-        }
-        System.out.println(maxBlock);
-
-
-
+        res = 0;
+        back(0);
+        System.out.println(res);
 
 
 
@@ -36,160 +24,128 @@ public class Main{
 
 
     }
-    public static void back(int depth, int direction, int[][] array){
+    static void back(int depth){
         if(depth==5){
             for(int i=0; i<n; i++){
-//                System.out.println(Arrays.toString(array[i]));
                 for(int j=0; j<n; j++){
-                    maxBlock = Math.max(array[i][j], maxBlock);
+                    res = Math.max(res, arr[i][j]);
                 }
             }
-//            System.out.println();
             return;
         }
-        move(direction, array);
-
-        for(int i=0; i<4; i++){
-            int[][] tmp = new int[n][n];
-            for(int j=0; j<n; j++){
-                tmp[j] = Arrays.copyOf(array[j], n);
-            }
-            back(depth+1, i, tmp);
+        int[][] base = new int[n][n];
+        for(int i=0; i<n; i++){
+            base[i] = Arrays.copyOf(arr[i], n);
         }
 
-
-
-
-
-
-
-
-
-
-    }
-    public static void move(int direction, int[][] arr){
-//        int zeroCount = 0;
-//        int lastNum = 0;
-        //up
-        if(direction==0){
-            for(int j=0; j<n; j++){
-                List<Integer> list = new ArrayList<>();
-                int lastNum = 0;
-                for(int i=0; i<n; i++){
-                    if(arr[i][j]!=0){
-                        if(lastNum==0){
-                            lastNum = arr[i][j];
-                        }
-                        else if(arr[i][j]==lastNum){
-                            list.add(lastNum*2);
-                            lastNum = 0;
-                        }
-                        else{
-                            list.add(lastNum);
-                            lastNum = arr[i][j];
-                        }
-                    }
-                    arr[i][j] = 0;
-                }
-                for(int i=0; i<list.size(); i++){
-                    arr[i][j] = list.get(i);
-                }
-                arr[list.size()][j] = lastNum;
-            }
-
-
-        }
-        //down
-        else if(direction==1){
-                for(int j=0; j<n; j++){
-                List<Integer> list = new ArrayList<>();
-                int lastNum = 0;
-                for(int i=n-1; i>=0; i--){
-                    if(arr[i][j]!=0){
-                        if(lastNum==0){
-                            lastNum = arr[i][j];
-                        }
-                        else if(arr[i][j]==lastNum){
-                            list.add(lastNum*2);
-                            lastNum = 0;
-                        }
-                        else{
-                            list.add(lastNum);
-                            lastNum = arr[i][j];
-                        }
-                    }
-                    arr[i][j] = 0;
-                }
-                for(int i=0; i<list.size(); i++){
-                    arr[n-1-i][j] = list.get(i);
-                }
-                arr[n-1-list.size()][j] = lastNum;
-            }
-        }
-        //left
-        else if(direction==2){
-            for(int i=0; i<n; i++){
-                List<Integer> list = new ArrayList<>();
-                int lastNum = 0;
-                for(int j=0; j<n; j++){
-                    if(arr[i][j]!=0){
-                        if(lastNum==0){
-                            lastNum = arr[i][j];
-                        }
-                        else if(arr[i][j]==lastNum){
-                            list.add(lastNum*2);
-                            lastNum = 0;
-                        }
-                        else{
-                            list.add(lastNum);
-                            lastNum = arr[i][j];
-                        }
-                    }
-                    arr[i][j] = 0;
-                }
-                for(int j=0; j<list.size(); j++){
-                    arr[i][j] = list.get(j);
-                }
-                arr[i][list.size()] = lastNum;
-            }
-
-
-
-
-
-        }
         //right
-        else if(direction==3){
-            for(int i=0; i<n; i++){
-                List<Integer> list = new ArrayList<>();
-                int lastNum = 0;
-                for(int j=n-1; j>=0; j--){
-                    if(arr[i][j]!=0){
-                        if(lastNum==0){
-                            lastNum = arr[i][j];
-                        }
-                        else if(arr[i][j]==lastNum){
-                            list.add(lastNum*2);
-                            lastNum = 0;
-                        }
-                        else{
-                            list.add(lastNum);
-                            lastNum = arr[i][j];
-                        }
-                    }
-                    arr[i][j] = 0;
-                }
-                for(int j=0; j<list.size(); j++){
-                    arr[i][n-1-j] = list.get(j);
-                }
-                arr[i][n-1-list.size()] = lastNum;
+        for(int i=0; i<n; i++){
+            Stack<Integer> stack = new Stack<>();
+            for(int j=0; j<n; j++){
+                if(arr[i][j]!=0) stack.add(arr[i][j]);
             }
+            int pointer = n-1;
 
-
-
-
-
+            while(!stack.isEmpty()){
+                int k = stack.pop();
+                if(!stack.isEmpty() && k==stack.peek()){
+                    arr[i][pointer] = k*2;
+                    stack.pop();
+                }
+                else {
+                    arr[i][pointer] = k;
+                }
+                pointer--;
+            }
+            for(int j=pointer; j>=0; j--){
+                arr[i][j] = 0;
+            }
         }
+        back(depth+1);
+        for(int i=0; i<n; i++){
+            arr[i] = Arrays.copyOf(base[i], n);
+        }
+
+        //left
+        for(int i=0; i<n; i++){
+            Stack<Integer> stack = new Stack<>();
+            for(int j=n-1; j>=0; j--){
+                if(arr[i][j]!=0) stack.add(arr[i][j]);
+            }
+            int pointer = 0;
+
+            while(!stack.isEmpty()){
+                int k = stack.pop();
+                if(!stack.isEmpty() && k==stack.peek()){
+                    arr[i][pointer] = k*2;
+                    stack.pop();
+                }
+                else {
+                    arr[i][pointer] = k;
+                }
+                pointer++;
+            }
+            for(int j=pointer; j<n; j++){
+                arr[i][j] = 0;
+            }
+        }
+        back(depth+1);
+        for(int i=0; i<n; i++){
+            arr[i] = Arrays.copyOf(base[i], n);
+        }
+
+        // down
+        for(int j=0; j<n; j++){
+            Stack<Integer> stack = new Stack<>();
+            for(int i=0; i<n; i++){
+                if(arr[i][j]!=0) stack.add(arr[i][j]);
+            }
+            int pointer = n-1;
+
+            while(!stack.isEmpty()){
+                int k = stack.pop();
+                if(!stack.isEmpty() && k==stack.peek()){
+                    arr[pointer][j] = k*2;
+                    stack.pop();
+                }
+                else {
+                    arr[pointer][j] = k;
+                }
+                pointer--;
+            }
+            for(int i=pointer; i>=0; i--){
+                arr[i][j] = 0;
+            }
+        }
+        back(depth+1);
+        for(int i=0; i<n; i++){
+            arr[i] = Arrays.copyOf(base[i], n);
+        }
+
+        // up
+        for(int j=0; j<n; j++){
+            Stack<Integer> stack = new Stack<>();
+            for(int i=n-1; i>=0; i--){
+                if(arr[i][j]!=0) stack.add(arr[i][j]);
+            }
+            int pointer = 0;
+
+            while(!stack.isEmpty()){
+                int k = stack.pop();
+                if(!stack.isEmpty() && k==stack.peek()){
+                    arr[pointer][j] = k*2;
+                    stack.pop();
+                }
+                else {
+                    arr[pointer][j] = k;
+                }
+                pointer++;
+            }
+            for(int i=pointer; i<n; i++){
+                arr[i][j] = 0;
+            }
+        }
+        back(depth+1);
 
 
 
