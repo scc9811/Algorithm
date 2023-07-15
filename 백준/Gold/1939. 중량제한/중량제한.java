@@ -1,80 +1,58 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
+import java.io.*;
 
-public class Main {
-    static int n, m, res;
-    static int start, end;
-    static Node[] graph;
+public class Main{
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        n = Integer.parseInt(st.nextToken());
-        m = Integer.parseInt(st.nextToken());
-        graph = new Node[n+1];
-        for(int i=0; i<m ;i++){
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        par = new int[n+1];
+        for(int i=1; i<=n; i++){
+            par[i] = i;
+        }
+        PriorityQueue<Edge> priorityQueue = new PriorityQueue<>();
+        for(int i=0; i<m; i++){
             st = new StringTokenizer(br.readLine());
-            int from = Integer.parseInt(st.nextToken());
-            int to = Integer.parseInt(st.nextToken());
-            int weight = Integer.parseInt(st.nextToken());
-
-            graph[from] = new Node(to, weight, graph[from]);
-            graph[to] = new Node(from, weight, graph[to]);
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            priorityQueue.add(new Edge(a, b, c));
         }
         st = new StringTokenizer(br.readLine());
-        start = Integer.parseInt(st.nextToken());
-        end = Integer.parseInt(st.nextToken());
-        res = 0;
-
-
-        int low = 1;
-        int high = (int)1e9;
-        int mid;
-        while(low<=high){
-            mid = (low+high)/2;
-            boolean tf = function(mid);
-            if(tf){
-                res = Math.max(res, mid);
-                low = mid +1;
-            }
-            else{
-                high = mid -1;
-            }
+        int from = Integer.parseInt(st.nextToken());
+        int to = Integer.parseInt(st.nextToken());
+        int res = (int)1e9;
+        while(find(from) != find(to)){
+            Edge e = priorityQueue.poll();
+            assert e != null;
+            res = Math.min(res, e.weight);
+            union(e.from, e.to);
         }
         System.out.println(res);
 
-
-
-
-
-
     }
-    static class Node{
-        int to, weight;
-        Node next;
-        Node(int to, int weight, Node next){
+    static class Edge implements Comparable<Edge>{
+        int from, to, weight;
+        Edge(int from, int to, int weight){
+            this.from = from;
             this.to = to;
             this.weight = weight;
-            this.next = next;
+        }
+        public int compareTo(Edge e){
+            return Integer.compare(e.weight, this.weight);
         }
     }
-    static boolean function(int limit){
-        boolean[] visited = new boolean[n+1];
-        visited[start] = true;
-        Queue<Integer> queue = new LinkedList<>();
-        queue.add(start);
 
-        while(!queue.isEmpty()){
-            int cur = queue.poll();
-            for(Node node=graph[cur]; node!=null; node=node.next){
-                if(!visited[node.to] && node.weight>=limit){
-                    if(node.to==end) return true;
-                    visited[node.to] = true;
-                    queue.add(node.to);
-                }
-            }
-        }
-        return false;
+    static int[] par;
+
+    static int find(int a) {
+        if (par[a] == a) return a;
+        return par[a] = find(par[a]);
+    }
+    static void union(int a, int b){
+        int p_a = find(a);
+        int p_b = find(b);
+        par[p_b] = p_a;
     }
 }
