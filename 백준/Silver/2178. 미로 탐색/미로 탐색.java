@@ -19,7 +19,7 @@ public class Main{
         int count = 1;
         int tmp = 1;
 
-        while(!queue.isEmpty()){
+        while(true){
             tmp--;
             if(tmp==0){
                 tmp = queue.size();
