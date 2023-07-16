@@ -1,37 +1,51 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
-    static int[] dp;
-    public static void main(String[] args)throws IOException {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine());
-        int[][] array = new int[N+1][3];
-        dp = new int[N*3+1];
-        for (int i=1; i<=N; i++){
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            array[i][0] = Integer.parseInt(st.nextToken());
-            array[i][1] = Integer.parseInt(st.nextToken());
-            array[i][2] = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(br.readLine());
+        int[] dp = new int[3];
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        dp[0] = Integer.parseInt(st.nextToken());
+        dp[1] = Integer.parseInt(st.nextToken());
+        dp[2] = Integer.parseInt(st.nextToken());
+
+        for(int i=1; i<n; i++){
+            st = new StringTokenizer(br.readLine());
+            int r = Integer.parseInt(st.nextToken());
+            int g = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int tmp1 = r + Math.min(dp[1], dp[2]);
+            int tmp2 = g + Math.min(dp[0], dp[2]);
+            int tmp3 = b + Math.min(dp[0], dp[1]);
+            dp[0] = tmp1;
+            dp[1] = tmp2;
+            dp[2] = tmp3;
         }
 
-
-        dp[1] = array[1][0];
-        dp[2] = array[1][1];
-        dp[3] = array[1][2];
-
-        for (int i=4; i<=3*N; i+=3){
-            dp[i] = Math.min(dp[i-1],dp[i-2]) + array[i/3+1][0];
-            dp[i+1] = Math.min(dp[i-1],dp[i-3]) + array[i/3+1][1];
-            dp[i+2] = Math.min(dp[i-2],dp[i-3]) + array[i/3+1][2];
+        int res = (int)1e9;
+        for(int i=0; i<3; i++){
+            res = Math.min(res, dp[i]);
         }
+        System.out.println(res);
 
-        int min = Math.min(dp[3*N-2],dp[3*N-1]);
-        min = Math.min(min,dp[3*N]);
-        System.out.println(min);
 
+
+
+
+    }
+
+
+    static int[] par;
+    static int find(int a) {
+        if (par[a] == a) return a;
+        return par[a] = find(par[a]);
+    }
+    static void union(int a, int b){
+        int p_a = find(a);
+        int p_b = find(b);
+        if(p_a<p_b) par[p_b] = p_a;
+        else par[p_a] = p_b;
     }
 }
