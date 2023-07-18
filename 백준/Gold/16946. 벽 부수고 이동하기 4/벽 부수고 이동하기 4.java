@@ -1,12 +1,9 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
+import java.io.*;
+
 
 public class Main {
-    static int[] dx = {0,0,1,-1};
-    static int[] dy = {1,-1,0,0};
-    static int n, m, arr[][], area[][], counts[][];
+    static int n, m, arr[][], res[][];
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -20,33 +17,47 @@ public class Main {
             }
         }
 
-        area = new int[n][m];
-        counts = new int[n][m];
 
-        fill_area();
-
+        int areaNumber = 2;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(1, 0);
         for(int i=0; i<n; i++){
-            StringBuilder sb = new StringBuilder();
             for(int j=0; j<m; j++){
-                if(arr[i][j]==1){
-                    int sum = 1;
-                    Set<Integer> set = new LinkedHashSet<>();
-                    for(int k=0; k<4; k++){
-                        int newI = i+dx[k];
-                        int newJ = j+dy[k];
-                        if(newI>=0 && newI<n && newJ>=0 && newJ<m && !set.contains(area[newI][newJ])){
-                            sum += counts[newI][newJ];
-                            set.add(area[newI][newJ]);
-                        }
-                    }
-                    sb.append(sum%10);
+                if(arr[i][j]==0){
+                    map.put(areaNumber, areaSize(areaNumber++, new Point(i, j)));
                 }
-                else sb.append(0);
             }
-            System.out.println(sb);
         }
 
 
+        res = new int[n][m];
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(arr[i][j]==1){
+                    res[i][j] = 1;
+                    Set<Integer> areaNumberSet = new LinkedHashSet<>();
+                    for(int k=0; k<4; k++){
+                        int newI = i + dx[k];
+                        int newJ = j + dy[k];
+                        if(newI>=0 && newI<n && newJ>=0 && newJ<m && !areaNumberSet.contains(arr[newI][newJ])){
+                            res[i][j] += map.get(arr[newI][newJ]);
+                            areaNumberSet.add(arr[newI][newJ]);
+                        }
+                    }
+                    res[i][j] %= 10;
+                }
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                sb.append(res[i][j]);
+            }
+            sb.append('\n');
+        }
+
+        System.out.println(sb);
 
 
 
@@ -55,45 +66,28 @@ public class Main {
 
 
     }
-    static void fill_area(){
-        boolean[][] visited = new boolean[n][m];
-        int nameCount = 1;
-
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
-                if(!visited[i][j] && arr[i][j]!=1) {
-                    Queue<Point> queue = new LinkedList<>();
-                    List<Point> list = new ArrayList<>();
-                    visited[i][j] = true;
-                    list.add(new Point(i, j));
-                    queue.add(new Point(i, j));
-                    int count = 1;
-                    while(!queue.isEmpty()){
-                        Point p = queue.poll();
-                        for(int k=0; k<4; k++){
-                            int newI = p.i+dx[k];
-                            int newJ = p.j+dy[k];
-                            if(newI>=0 && newI<n && newJ>=0 && newJ<m && !visited[newI][newJ] && arr[newI][newJ]!=1){
-                                visited[newI][newJ] = true;
-                                queue.add(new Point(newI, newJ));
-                                list.add(new Point(newI, newJ));
-                                count++;
-                            }
-                        }
-                    }
-
-                    for(Point p : list){
-                        counts[p.i][p.j] = count;
-                        area[p.i][p.j] = nameCount;
-                    }
-                    nameCount++;
+    static int[] dx = {0,0,1,-1};
+    static int[] dy = {1,-1,0,0};
+    static int areaSize(int areaNumber, Point startP){
+        Queue<Point> queue = new LinkedList<>();
+        arr[startP.i][startP.j] = areaNumber;
+        queue.add(startP);
+        int count = 0;
+        while(!queue.isEmpty()){
+            count++;
+            Point curP = queue.poll();
+            for(int i=0; i<4; i++){
+                int newI = curP.i + dx[i];
+                int newJ = curP.j + dy[i];
+                if(newI>=0 && newI<n && newJ>=0 && newJ<m && arr[newI][newJ]==0){
+                    arr[newI][newJ] = areaNumber;
+                    queue.add(new Point(newI, newJ));
                 }
-
             }
         }
 
 
-
+        return count;
     }
     static class Point{
         int i, j;
@@ -102,30 +96,6 @@ public class Main {
             this.j = j;
         }
     }
-    final static int MOD = 1000000007;
-    static class SegTree {
-        long[] tree;
-        SegTree(int n){
-            long treeHeight = (long)Math.ceil(Math.log(n)/Math.log(2))+1;
-            long treeNodeCount = (long)Math.pow(2,treeHeight);
-            tree = new long[(int)treeNodeCount];
-        }
-        long init(long[] arr, int node, int start, int end){
-            if(start==end) return tree[node] = arr[start];
-            else return tree[node] = (init(arr, node*2, start, (start+end)/2) *
-                    init(arr, node*2+1, (start+end)/2+1, end))%MOD;
-        }
-        long mul(int node, int start, int end, int left, int right){
-            if(start>right || end<left) return 1;
-            else if(start<=left && end>=right) return tree[node];
-            else return (mul(node*2, start, end, left, (left+right)/2) *
-                        mul(node*2+1, start, end, (left+right)/2+1, right))%MOD;
-        }
-        long update(int node, int start, int end, int index, long diff){
-            if(start > index || end < index) return tree[node];
-            if(start==end) return tree[node] = diff;
-            return tree[node] = (update(node*2, start, (start+end)/2, index, diff)*
-                    update(node*2, (start+end)/2+1, end, index, diff));
-        }
-    }
 }
+
+
