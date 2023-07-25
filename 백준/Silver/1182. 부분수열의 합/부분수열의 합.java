@@ -1,42 +1,67 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main{
-    static int[] array;
-    static int n,s,count,sum;
-    public static void main(String[] args)throws IOException {
+    static int n, s, arr[], res;
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
         s = Integer.parseInt(st.nextToken());
-        array = new int[n];
+        arr = new int[n];
         st = new StringTokenizer(br.readLine());
-        for (int i=0; i<n; i++){
-            array[i] = Integer.parseInt(st.nextToken());
+        for(int i=0; i<n; i++){
+            arr[i] = Integer.parseInt(st.nextToken());
         }
-        sum=Integer.MAX_VALUE;
-        count=0;
-        backTracking(0);
-        System.out.println(count);
+        res = 0;
+        back(0, 0);
+        if(s==0) res--;
+        System.out.println(res);
+
 
 
 
     }
-    public static void backTracking(int startIndex){
-        if(sum==s) {
-            count++;
+    static void back(int idx, int sum){
+        if(sum == s) res++;
+
+
+        for(int i=idx; i<n; i++){
+            back(i+1, sum + arr[i]);
         }
 
 
 
-        for(int i=startIndex; i<n; i++){
-            if(i==0) sum=array[0];
-            else sum+=array[i];
-            backTracking(i+1);
-            sum-=array[i];
+    }
+    static class SegTree{
+        long[] tree;
+        SegTree(int n){
+            long treeHeight = (long) Math.ceil(Math.log(n) / Math.log(2))+1;
+            long treeNodeCount = (long) Math.pow(2, treeHeight);
+            tree = new long[(int)treeNodeCount];
         }
+        long init(long[] arr, int node, int start, int end){
+            if(start==end) return arr[start];
+            long tmpA = init(arr, node*2, start, (start+end)/2);
+            long tmpB = init(arr, node*2+1, (start+end)/2+1, end);
+            if(tmpA==0) return tree[node] = tmpB;
+            else if(tmpB==0) return tree[node] = tmpA;
+            else{
+                return tree[node] = Math.min(tmpA, tmpB);
+            }
+        }
+        long min(int node, int start, int end, int left, int right){
+            if(end<left || start>right){
+                return Integer.MAX_VALUE;
+            }
+            else if(left<=start && end<=right){
+                return tree[node];
+            }
+            else {
+                return Math.min(min(node*2, start, (start+end)/2, left, right),
+                        min(node*2+1, (start+end)/2+1, end, left, right));
+            }
+        }
+
     }
 }
