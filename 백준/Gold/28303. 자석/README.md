@@ -1,10 +1,10 @@
-# [Gold IV] 자석 - 28303 
+# [Gold III] 자석 - 28303 
 
 [문제 링크](https://www.acmicpc.net/problem/28303) 
 
 ### 성능 요약
 
-메모리: 78048 KB, 시간: 484 ms
+메모리: 77916 KB, 시간: 480 ms
 
 ### 분류
 

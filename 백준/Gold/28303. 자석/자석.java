@@ -30,7 +30,6 @@ public class Main{
         long res = (int)-1e11;
         for(int i=0; i<=n-2; i++){
             res = Math.max(res, arr[i]-cost1[i]+ (long) i *k);
-//            System.out.println("v = "+(arr[i]-cost1[i]+ (long) i *k));
         }
 
 
