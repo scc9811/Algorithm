@@ -55,7 +55,6 @@ class Solution01 {
 
             boolean lastClosed = false;
             for(int i=0; i<n; i++){
-//                System.out.println("n = "+(i+1));
                 if(s.charAt(i) == '(') {
                     deepCount++;
                     stack.add('(');
@@ -88,7 +87,6 @@ class Solution01 {
                         isValid[deepCount] = true;
                         if(deepCount-1 >= 0) isValid[deepCount-1] = false;
                     }
-//                    if(lastClosed) continueCount[deepCount+1] = 0;
                     lastClosed = true;
                 }
                 else if(s.charAt(i) == '}'){
@@ -115,25 +113,13 @@ class Solution01 {
                         isValid[deepCount] = true;
                         if(deepCount-1 >= 0) isValid[deepCount-1] = false;
                     }
-//                    if(lastClosed) continueCount[deepCount+1] = 0;
                     lastClosed = true;
                 }
 
 
 
-//                for(int j=0; j<10; j++){
-//                    System.out.printf("%d ", continueCount[j]);
-//                }
-//                System.out.println();
-//                for(int j=0; j<10; j++){
-//                    System.out.printf("%b ",isValid[j]);
-//                }
-//                System.out.println();
-//                System.out.println("total = "+total);
-//                System.out.println("deep = "+deepCount);
-//                System.out.println();
+
             }
-//            System.out.println(total);
 
 
 

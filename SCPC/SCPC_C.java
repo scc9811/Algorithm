@@ -55,12 +55,10 @@ class Solution11 {
 
             int[][] left_right = new int[n][2];
             for(int count=0; count<m; count++){
-//                System.out.println("count = "+count);
                 int max = 0;
                 int idx = -1;
                 for(int i=0; i<n; i++){
                     if(visited[i]) continue;
-//                    System.out.println("i = "+i);
                     int pointCounter_left = 0;
                     int pointCounter_right = 0;
                     int break_leftIdx = Math.max(0, i-t);
@@ -80,8 +78,7 @@ class Solution11 {
                         }
                         pointCounter_right++;
                     }
-//                    System.out.println("left = "+pointCounter_left);
-//                    System.out.println("right = "+pointCounter_right);
+
                     if(break_rightIdx == n) break_rightIdx = n-1;
                     if(break_leftIdx == -1) break_leftIdx = 0;
                     if(max < pointCounter_left + pointCounter_right){
@@ -91,16 +88,12 @@ class Solution11 {
                         left_right[i][1] = break_rightIdx;
                     }
                 }
-//                System.out.println("max = "+max);
                 if(max == 0) break;
                 res += max+1;
 
-//                System.out.println("res_left = "+left_right[idx][0]);
-//                System.out.println("res right = "+left_right[idx][1]);
                 for(int i=left_right[idx][0]; i<=left_right[idx][1]; i++){
                     visited[i] = true;
                 }
-//                System.out.println(Arrays.toString(visited));
             }
 
 
