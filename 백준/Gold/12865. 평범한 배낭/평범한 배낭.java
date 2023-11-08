@@ -1,41 +1,28 @@
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args)throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int k = Integer.parseInt(st.nextToken());
-        int[][] dp = new int[n+1][k+1];
-        for(int i=1; i<=n; i++){
-            dp[i] = Arrays.copyOf(dp[i-1], k+1);
-            st = new StringTokenizer(br.readLine());
-            int w = Integer.parseInt(st.nextToken());
-            int v = Integer.parseInt(st.nextToken());
-            for(int j=w; j<=k; j++){
-                dp[i][j] = Math.max(dp[i][j], dp[i-1][j-w] + v);
+        int objectCount = Integer.parseInt(st.nextToken());
+        int fullWeight = Integer.parseInt(st.nextToken());
+        // index 0은 쓰지 않음.
+        int[] dp = new int[fullWeight+1];
+        for (int i=0; i<objectCount; i++){
+            StringTokenizer st2 = new StringTokenizer(br.readLine());
+            int weight = Integer.parseInt(st2.nextToken());
+            int value = Integer.parseInt(st2.nextToken());
+            if (weight <=fullWeight){
+                for (int j=fullWeight; j>=weight; j--){
+                    dp[j] = Math.max(dp[j],dp[j-weight]+value);
+                }
             }
         }
+        System.out.println(dp[fullWeight]);
 
-        System.out.println(dp[n][k]);
-
-
-
-
-
-    }
-
-
-    static int[] par;
-    static int find(int a) {
-        if (par[a] == a) return a;
-        return par[a] = find(par[a]);
-    }
-    static void union(int a, int b){
-        int p_a = find(a);
-        int p_b = find(b);
-        if(p_a<p_b) par[p_b] = p_a;
-        else par[p_a] = p_b;
     }
 }
