@@ -1,55 +1,43 @@
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
-import java.util.Arrays;
+import java.util.*;
+import java.io.*;
+
 
 public class Main {
-    public static void main(String[] args)throws IOException {
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int trees = Integer.parseInt(st.nextToken());
-        int needs = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        int[] arr = new int[n];
         st = new StringTokenizer(br.readLine());
-        int[] array = new int[trees];
-        long sum = 0;
-        for (int i=0; i<trees; i++){
-            array[i] = Integer.parseInt(st.nextToken());
-            sum += array[i];
+        for(int i=0; i<n; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
         }
+        Arrays.sort(arr);
 
-
-        Arrays.sort(array);
-        sum = sum- (long) array[0] *array.length;
-        long result = array[0];
-        int plus = array.length;
-        for(int i=1; i<array.length; i++){
-            if (sum<needs) {
-                plus = array.length-i+1;
-                break;
+        long l = 0;
+        long r = 2000000000;
+        long mid;
+        long maxHeight = 0;
+        while(l <= r) {
+            mid = (l + r) / 2;
+            long sum = 0;
+            for(int i=0; i<n; i++) {
+                if(arr[i] > mid) {
+                    sum += arr[i] - mid;
+                }
             }
-            long tmp = array[i]-array[i-1];
-            sum = sum-(tmp)*(array.length-i);
-            result += tmp;
+
+            if(sum >= m) {
+                maxHeight = Math.max(maxHeight, mid);
+                l = mid + 1;
+            }
+            else {
+                r = mid - 1;
+            }
         }
 
-        result = result-(needs-sum)/plus;
-        if ((needs-sum)%plus!=0) result--;
-        System.out.println(result);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        System.out.println(maxHeight);
 
 
 
