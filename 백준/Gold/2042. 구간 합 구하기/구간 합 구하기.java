@@ -1,7 +1,7 @@
 import java.util.*;
 import java.io.*;
 
-public class Main {
+public class Main{
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -36,7 +36,8 @@ public class Main {
         }
 
         System.out.println(sb);
-        
+
+
 
 
 
@@ -56,24 +57,26 @@ public class Main {
         long init(long[] arr, int node, int start, int end) {
             if (start == end) return tree[node] = arr[start];
             return tree[node] = init(arr, node*2, start, (start+end)/2) +
-                    init(arr, node*2+1, (start+end)/2+1, end);
+            init(arr, node*2+1, (start+end)/2+1, end);
         }
 
         long sum(int node, int start, int end, int left, int right) {
-            if (end < left || right < start) return 0;
+            if (start > right || end < left) return 0;
+            // 전체 다 포함되는경우
             else if (left <= start && end <= right) return tree[node];
-            else return sum(node * 2, start, (start + end) / 2, left, right) +
-                        sum(node * 2 + 1, (start + end) / 2 + 1, end, left, right);
+            return sum(node*2, start, (start+end)/2, left, right) +
+                    sum(node*2+1, (start+end)/2+1, end, left, right);
         }
 
         void update(int node, int start, int end, int index, long diff) {
+            // 범위 벗어남
             if (index < start || end < index) return;
             tree[node] = tree[node] + diff;
-            if (start != end) {
-                update(node*2, start, (start+end)/2, index, diff);
-                update(node*2+1, (start+end)/2+1, end, index, diff);
-            }
-
+            if (start == end) return;
+            update(node*2, start, (start+end)/2, index, diff);
+            update(node*2+1, (start+end)/2+1, end, index, diff);
         }
+
+
     }
 }
