@@ -1,7 +1,7 @@
 import java.util.*;
 import java.io.*;
 
-public class Main{
+public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -16,7 +16,6 @@ public class Main{
 
         SegTree segTree = new SegTree(n);
         segTree.init(arr, 1, 1, n);
-
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < m + k; i++) {
@@ -57,26 +56,22 @@ public class Main{
         long init(long[] arr, int node, int start, int end) {
             if (start == end) return tree[node] = arr[start];
             return tree[node] = init(arr, node*2, start, (start+end)/2) +
-            init(arr, node*2+1, (start+end)/2+1, end);
+                    init(arr, node*2+1, (start+end)/2+1, end);
         }
 
         long sum(int node, int start, int end, int left, int right) {
-            if (start > right || end < left) return 0;
-            // 전체 다 포함되는경우
-            else if (left <= start && end <= right) return tree[node];
+            if (left > end || right < start) return 0;
+            else if (start >= left && end <= right) return tree[node];
             return sum(node*2, start, (start+end)/2, left, right) +
-                    sum(node*2+1, (start+end)/2+1, end, left, right);
+                    sum(node*2+1, (start+end)/2 + 1, end, left, right);
         }
 
         void update(int node, int start, int end, int index, long diff) {
-            // 범위 벗어남
-            if (index < start || end < index) return;
-            tree[node] = tree[node] + diff;
+            if (index < start || index > end) return;
+            tree[node] += diff;
             if (start == end) return;
             update(node*2, start, (start+end)/2, index, diff);
             update(node*2+1, (start+end)/2+1, end, index, diff);
         }
-
-
     }
 }
