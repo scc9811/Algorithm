@@ -1,76 +1,60 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
+import java.io.*;
 
 public class Main {
-    static int[] dx = {1,-1,0,0};
-    static int[] dy = {0,0,1,-1};
-    static int n, m, arr[][];
-    public static void main(String[] args)throws IOException {
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        m = Integer.parseInt(st.nextToken());
-        n = Integer.parseInt(st.nextToken());
-
-        Queue<Point>  queue = new LinkedList<>();
-        arr = new int[n][m];
-        for(int i=0; i<n; i++){
+        int m = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(st.nextToken());
+        Queue<Point> queue = new LinkedList<>();
+        int[][] arr = new int[n][m];
+        
+        for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
-            for(int j=0; j<m; j++){
+            for (int j = 0; j < m; j++) {
                 arr[i][j] = Integer.parseInt(st.nextToken());
-                if(arr[i][j]==1) queue.add(new Point(i, j));
+                if (arr[i][j] == 1) queue.add(new Point(i, j, 0));
             }
         }
 
+        int[] dx = {1, -1, 0, 0};
+        int[] dy = {0, 0, 1, -1};
+        int max = 0;
 
-
-        int days = 0;
-        int tmp = queue.size();
-        while(!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             Point p = queue.poll();
-            int startI = p.x;
-            int startJ = p.y;
-            for(int i=0; i<4; i++){
-                int newI = startI+dx[i];
-                int newJ = startJ+dy[i];
-                if(newI>=0 && newI<n && newJ>=0 && newJ<m && arr[newI][newJ]==0){
-                    arr[newI][newJ] = 1;
-                    queue.add(new Point(newI, newJ));
+            max = Math.max(max, p.count);
+            for(int i = 0; i < 4; i++) {
+                int newI = p.x + dx[i];
+                int newJ = p.y + dy[i];
+                if (newI < 0 || newI >= n || newJ < 0 || newJ >= m || arr[newI][newJ] != 0) continue;
+                arr[newI][newJ] = 1;
+                queue.add(new Point(newI, newJ, p.count + 1));
+            }
+        }
+
+        boolean flag = true;
+        loop:
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j< m; j++) {
+                if (arr[i][j] == 0) {
+                    flag = false;
+                    continue loop;
                 }
             }
-
-            tmp--;
-            if(tmp==0){
-                days++;
-                tmp = queue.size();
-            }
         }
-        days--;
-
-        if(TF()) System.out.println(days);
-        else System.out.println(-1);
-
-
-
-
+        if (!flag) System.out.println(-1);
+        else System.out.println(max);
+        
 
     }
-    static class Point{
-        int x, y;
-        Point(int x, int y){
+    private static class Point {
+        int x, y, count;
+        private Point(int x, int y, int count) {
             this.x = x;
             this.y = y;
+            this.count = count;
         }
     }
-    public static boolean TF(){
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
-                if(arr[i][j]==0) return false;
-            }
-        }
-
-        return true;
-    }
-
 }
